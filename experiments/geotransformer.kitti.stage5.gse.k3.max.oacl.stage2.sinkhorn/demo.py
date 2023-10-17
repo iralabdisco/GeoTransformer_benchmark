@@ -61,7 +61,7 @@ def main():
 
     #[76 65 75 76 73]
     _, neighbor_limits = test_data_loader(cfg)
-    print(neighbor_limits)
+    print(neighbor_limits) # TODO sembra non essere un qualcosa deterministico, anche se forse dovrebbe
 
     data_dict = registration_collate_fn_stack_mode(
         [data_dict], cfg.backbone.num_stages, cfg.backbone.init_voxel_size, cfg.backbone.init_radius, neighbor_limits
