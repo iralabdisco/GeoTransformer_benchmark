@@ -6,11 +6,11 @@ import open3d as o3d
 
 from geotransformer.utils.data import registration_collate_fn_stack_mode
 from geotransformer.utils.torch import to_cuda, release_cuda
-from geotransformer.utils.open3d import make_open3d_point_cloud, get_color, draw_geometries
 from geotransformer.utils.registration import compute_registration_error
 
 from config import make_cfg
 from model import create_model
+from dataset import test_data_loader
 
 
 def make_parser():
@@ -23,11 +23,12 @@ def make_parser():
 
 
 def load_data(args):
+
     src_pcd: o3d.geometry.PointCloud = o3d.io.read_point_cloud(args.src_file)
     ref_pcd: o3d.geometry.PointCloud  = o3d.io.read_point_cloud(args.ref_file)
 
-    src_pcd = src_pcd.voxel_down_sample(0.025)
-    ref_pcd = ref_pcd.voxel_down_sample(0.025)
+    src_pcd = src_pcd.voxel_down_sample(0.3)
+    ref_pcd = ref_pcd.voxel_down_sample(0.3)
 
     src_points = np.asarray(src_pcd.points)
     ref_points = np.asarray(ref_pcd.points)
@@ -57,15 +58,20 @@ def main():
 
     # prepare data
     data_dict = load_data(args)
-    neighbor_limits = [38, 36, 36, 38]  # default setting in 3DMatch
+
+    #[76 65 75 76 73]
+    _, neighbor_limits = test_data_loader(cfg)
+    print(neighbor_limits)
+
     data_dict = registration_collate_fn_stack_mode(
         [data_dict], cfg.backbone.num_stages, cfg.backbone.init_voxel_size, cfg.backbone.init_radius, neighbor_limits
     )
 
     # prepare model
+
     model = create_model(cfg).cuda()
-    state_dict = torch.load(args.weights)
-    model.load_state_dict(state_dict["model"])
+    state_dict = torch.load(args.weights, map_location=torch.device('cpu'))
+    model.load_state_dict(state_dict['model'], strict=True)
 
     # prediction
     data_dict = to_cuda(data_dict)
