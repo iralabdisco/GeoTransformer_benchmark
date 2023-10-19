@@ -6,7 +6,7 @@ PY3="python3"
 GPU = "0"
 os.environ["CUDA_VISIBLE_DEVICES"] = GPU
 
-BENCHMARK_DIR="/benchmark/point_clouds_registration_benchmark/"
+BENCHMARK_DIR="/benchmark/point_clouds_registration_benchmark/dataset_voxelgrid_0.3/"
 RESULTS_DIR="/benchmark/experiments/geotransformer/kitti"
 
 MODEL_PATH="/home/docker/GeoTransformer_benchmark/weights/geotransformer-kitti.pth.tar"

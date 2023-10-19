@@ -22,8 +22,8 @@ from model import create_model
 import benchmark_helpers
 
 def load_data(src_pcd, ref_pcd):
-    src_pcd = src_pcd.voxel_down_sample(0.3)
-    ref_pcd = ref_pcd.voxel_down_sample(0.3)
+    # src_pcd = src_pcd.voxel_down_sample(0.3)
+    # ref_pcd = ref_pcd.voxel_down_sample(0.3)
 
     src_points = np.asarray(src_pcd.points)
     ref_points = np.asarray(ref_pcd.points)
@@ -77,7 +77,7 @@ def main():
     # initialize result file
     os.makedirs(args.output_dir, exist_ok=True)
     header_comment = "# " + " ".join(sys.argv[:]) + "\n"
-    header = ['id', 'initial_error', 'final_error', 'transformation', 'error']
+    header = ['id', 'initial_error', 'final_error', 'transformation', 'status_code']
     result_name = problem_name + "_result.txt"
     result_filename = os.path.join(args.output_dir, result_name)
     with open(result_filename, mode='w') as f:
@@ -118,7 +118,7 @@ def main():
                 error = "OOM"
                 n_fails_oom += 1
             else:
-                error = "other"
+                error = "runtime_error"
                 n_fails_other += 1
             data_dict = release_cuda(data_dict)
             registration_solution = np.eye(4)
