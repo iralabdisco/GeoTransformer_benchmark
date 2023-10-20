@@ -108,7 +108,8 @@ def main():
 
         data_dict = to_cuda(data_dict)
         try:
-            output_dict = model(data_dict)
+            with torch.no_grad():
+                output_dict = model(data_dict)
             output_dict = release_cuda(output_dict)
             data_dict = release_cuda(data_dict)
             registration_solution = output_dict["estimated_transform"]
@@ -122,6 +123,8 @@ def main():
                 n_fails_other += 1
             data_dict = release_cuda(data_dict)
             registration_solution = np.eye(4)
+
+        torch.cuda.empty_cache()
 
         # calculate final error
         moved_source_pcd.transform(registration_solution)
