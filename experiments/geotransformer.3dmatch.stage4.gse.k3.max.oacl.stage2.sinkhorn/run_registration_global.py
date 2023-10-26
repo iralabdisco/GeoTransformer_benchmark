@@ -6,7 +6,7 @@ PY3="python3"
 GPU = "0"
 os.environ["CUDA_VISIBLE_DEVICES"] = GPU
 
-BENCHMARK_DIR="/benchmark/point_clouds_registration_benchmark/"
+BENCHMARK_DIR="/benchmark/point_clouds_registration_benchmark/dataset_voxelgrid_0.025"
 RESULTS_DIR="/benchmark/experiments/geotransformer/3d-match"
 
 MODEL_PATH="/home/docker/GeoTransformer_benchmark/weights/geotransformer-3dmatch.pth.tar"
@@ -62,6 +62,10 @@ for problem_txt, pcd_dir in zip(problem_txts, pcd_dirs):
     commands.append(full_command_stats)
 
 # delete and recreate result directory
+answer = input(f"Delete previous {RESULTS_DIR} experiments? [Y/N] ")
+if answer != "Y":
+    print("Quitting...")
+    exit()
 shutil.rmtree(RESULTS_DIR, ignore_errors=True)
 os.makedirs(RESULTS_DIR)
 

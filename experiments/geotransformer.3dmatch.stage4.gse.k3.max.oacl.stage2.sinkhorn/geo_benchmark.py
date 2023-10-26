@@ -21,8 +21,6 @@ from model import create_model
 import benchmark_helpers
 
 def load_data(src_pcd, ref_pcd):
-    src_pcd = src_pcd.voxel_down_sample(0.025)
-    ref_pcd = ref_pcd.voxel_down_sample(0.025)
 
     src_points = np.asarray(src_pcd.points)
     ref_points = np.asarray(ref_pcd.points)
